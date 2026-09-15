@@ -6,6 +6,7 @@ import { Reveal } from "@/components/site/home/reveal";
 import { BeforeAfterSection } from "@/components/site/home/before-after-section";
 import { Gallery } from "@/components/site/home/gallery";
 import { Testimonials } from "@/components/site/home/testimonials";
+import { TrackSection } from "@/components/site/home/track-section";
 import { FinalCta } from "@/components/site/home/final-cta";
 import { getSettings } from "@/lib/data/settings";
 import { getActiveServices } from "@/lib/data/services";
@@ -45,6 +46,7 @@ export default async function HomePage() {
       <BeforeAfterSection />
       <Gallery />
       <Testimonials />
+      <TrackSection />
       <FinalCta phone={settings.phone} />
     </>
   );

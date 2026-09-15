@@ -18,7 +18,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { ORDER_STATUS_LABELS, ORDER_WORKFLOW } from "@/lib/constants";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { updateOrderStatus, completeOrder } from "@/lib/actions/orders";
 import type { OrderRow } from "@/lib/data/orders";
@@ -29,27 +28,13 @@ export function OrderCard({ order, currency }: { order: OrderRow; currency: stri
   const VehicleIcon = order.vehicle_type === "car" ? Car : Bike;
 
   const isTerminal = order.status === "completed" || order.status === "cancelled";
-  const currentIndex = ORDER_WORKFLOW.indexOf(order.status);
-  const nextStatus = !isTerminal ? ORDER_WORKFLOW[currentIndex + 1] : null;
 
-  function handleAdvance() {
-    if (!nextStatus) return;
-    if (nextStatus === "completed") {
-      startTransition(async () => {
-        const result = await completeOrder(order.id);
-        if (result.success) {
-          toast.success("تم إتمام الطلب وإنشاء الفاتورة");
-          router.push(`/dashboard/invoices/${result.data.invoiceId}`);
-        } else {
-          toast.error(result.error);
-        }
-      });
-      return;
-    }
+  function handleComplete() {
     startTransition(async () => {
-      const result = await updateOrderStatus(order.id, nextStatus);
+      const result = await completeOrder(order.id);
       if (result.success) {
-        router.refresh();
+        toast.success("تم إتمام الطلب وإنشاء الفاتورة");
+        router.push(`/dashboard/invoices/${result.data.invoiceId}`);
       } else {
         toast.error(result.error);
       }
@@ -106,15 +91,9 @@ export function OrderCard({ order, currency }: { order: OrderRow; currency: stri
 
       {!isTerminal && (
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button size="sm" onClick={handleAdvance} loading={pending} className="flex-1 sm:flex-none">
-            {nextStatus === "completed" ? (
-              <>
-                <CheckCircle2 className="size-4" />
-                إتمام الطلب
-              </>
-            ) : (
-              <>نقل إلى {ORDER_STATUS_LABELS[nextStatus!]}</>
-            )}
+          <Button size="sm" onClick={handleComplete} loading={pending} className="flex-1 sm:flex-none">
+            <CheckCircle2 className="size-4" />
+            إتمام الطلب
           </Button>
 
           <AlertDialog>

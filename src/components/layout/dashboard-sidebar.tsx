@@ -6,9 +6,11 @@ import type { UserRole } from "@/types/database";
 export function DashboardSidebar({
   businessName,
   role,
+  initialPendingBookings = 0,
 }: {
   businessName: string;
   role: UserRole;
+  initialPendingBookings?: number;
 }) {
   return (
     <aside className="no-print hidden w-64 shrink-0 border-l border-ink-100 bg-white md:flex md:flex-col">
@@ -20,7 +22,7 @@ export function DashboardSidebar({
       </Link>
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
-        <NavLinks role={role} />
+        <NavLinks role={role} initialPendingBookings={initialPendingBookings} />
       </div>
 
       <div className="border-t border-ink-100 px-5 py-4 text-center text-xs text-ink-400">

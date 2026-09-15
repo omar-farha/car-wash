@@ -86,3 +86,6 @@ export const WORKING_HOURS = {
 };
 
 export const DEFAULT_BUSINESS_NAME = "مغسلة السيارات";
+
+/** Minimum completed visits before a customer is flagged "عميل مميز" in the dashboard. */
+export const LOYAL_CUSTOMER_VISIT_THRESHOLD = 5;

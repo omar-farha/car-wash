@@ -51,6 +51,9 @@ export function SiteFooter({
           <Link href="/booking" className="block transition-colors hover:text-brand-700">
             احجز موعدك
           </Link>
+          <Link href="/track" className="block transition-colors hover:text-brand-700">
+            تتبع حجزي
+          </Link>
           <Link href="/login" className="block transition-colors hover:text-brand-700">
             دخول الموظفين
           </Link>

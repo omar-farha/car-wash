@@ -13,6 +13,7 @@ import {
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { FinanceRangeFilter } from "@/components/dashboard/finance/finance-range-filter";
+import { PrintButton } from "@/components/dashboard/print-button";
 import { TopServicesChart } from "@/components/dashboard/reports/top-services-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -44,9 +45,19 @@ export default async function ReportsPage({
 
   return (
     <div>
-      <PageHeader title="التقارير" description="أداء المغسلة خلال الفترة المحددة" />
+      <PageHeader
+        title="التقارير"
+        description="أداء المغسلة خلال الفترة المحددة"
+        action={
+          <div className="no-print">
+            <PrintButton label="طباعة التقرير / PDF" />
+          </div>
+        }
+      />
 
-      <FinanceRangeFilter />
+      <div className="no-print">
+        <FinanceRangeFilter />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

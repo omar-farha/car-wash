@@ -3,7 +3,7 @@ import { CalendarClock } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { BookingFilters } from "@/components/dashboard/bookings/booking-filters";
-import { BookingCard } from "@/components/dashboard/bookings/booking-card";
+import { BookingsGroupedList } from "@/components/dashboard/bookings/bookings-grouped-list";
 import { requireStaff } from "@/lib/auth";
 import { getBookings } from "@/lib/data/bookings";
 import type { BookingStatus } from "@/types/database";
@@ -19,7 +19,7 @@ export default async function BookingsPage({
   await requireStaff();
 
   const bookings = await getBookings({
-    date: params.date ?? "today",
+    date: params.date ?? "all",
     status: (params.status as BookingStatus | undefined) ?? "all",
   });
 
@@ -36,11 +36,7 @@ export default async function BookingsPage({
           description="لا توجد حجوزات مطابقة لهذا الفلتر"
         />
       ) : (
-        <div className="space-y-3">
-          {bookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
-          ))}
-        </div>
+        <BookingsGroupedList bookings={bookings} />
       )}
     </div>
   );

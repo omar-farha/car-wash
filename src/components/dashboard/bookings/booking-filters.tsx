@@ -36,7 +36,7 @@ export function BookingFilters() {
   return (
     <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <Select
-        defaultValue={searchParams.get("date") ?? "today"}
+        defaultValue={searchParams.get("date") ?? "all"}
         onValueChange={(v) => updateParam("date", v)}
       >
         <SelectTrigger className="w-full sm:w-44">

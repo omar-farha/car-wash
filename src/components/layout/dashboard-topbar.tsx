@@ -25,10 +25,12 @@ export function DashboardTopbar({
   businessName,
   fullName,
   role,
+  initialPendingBookings = 0,
 }: {
   businessName: string;
   fullName: string;
   role: UserRole;
+  initialPendingBookings?: number;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -38,10 +40,13 @@ export function DashboardTopbar({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex size-9 items-center justify-center rounded-lg text-ink-600 hover:bg-ink-100"
+          className="relative flex size-9 items-center justify-center rounded-lg text-ink-600 hover:bg-ink-100"
           aria-label="فتح القائمة"
         >
           <Menu className="size-5" />
+          {initialPendingBookings > 0 && (
+            <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-brand-600" />
+          )}
         </button>
         <span className="text-sm font-extrabold text-ink-900">{businessName}</span>
       </div>
@@ -97,7 +102,11 @@ export function DashboardTopbar({
               </DialogPrimitive.Close>
             </div>
             <div className="flex-1 overflow-y-auto px-3 py-2">
-              <NavLinks role={role} onNavigate={() => setOpen(false)} />
+              <NavLinks
+                role={role}
+                onNavigate={() => setOpen(false)}
+                initialPendingBookings={initialPendingBookings}
+              />
             </div>
           </DialogPrimitive.Content>
         </DialogPrimitive.Portal>

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Users, ChevronLeft } from "lucide-react";
+import { Users, ChevronLeft, Star } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { SearchInput } from "@/components/dashboard/search-input";
+import { ExportCustomersButton } from "@/components/dashboard/customers/export-customers-button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableHeader,
@@ -16,6 +18,7 @@ import { requireStaff } from "@/lib/auth";
 import { getCustomers } from "@/lib/data/customers";
 import { getSettings } from "@/lib/data/settings";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { LOYAL_CUSTOMER_VISIT_THRESHOLD } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "العملاء" };
 
@@ -30,7 +33,11 @@ export default async function CustomersPage({
 
   return (
     <div>
-      <PageHeader title="العملاء" description="كل العملاء الذين تعاملوا مع المغسلة" />
+      <PageHeader
+        title="العملاء"
+        description="كل العملاء الذين تعاملوا مع المغسلة"
+        action={<ExportCustomersButton data={customers} />}
+      />
 
       <div className="mb-5">
         <SearchInput placeholder="ابحث بالاسم أو رقم الهاتف" />
@@ -53,7 +60,17 @@ export default async function CustomersPage({
           <TableBody>
             {customers.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell className="font-semibold text-ink-900">{customer.name}</TableCell>
+                <TableCell className="font-semibold text-ink-900">
+                  <span className="flex items-center gap-2">
+                    {customer.name}
+                    {customer.visits >= LOYAL_CUSTOMER_VISIT_THRESHOLD && (
+                      <Badge variant="default" className="gap-1">
+                        <Star className="size-3 fill-current" />
+                        عميل مميز
+                      </Badge>
+                    )}
+                  </span>
+                </TableCell>
                 <TableCell dir="ltr" className="text-right">
                   {customer.phone}
                 </TableCell>

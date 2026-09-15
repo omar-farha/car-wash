@@ -48,7 +48,7 @@ export function ExpenseList({ expenses, currency }: { expenses: ExpenseRow[]; cu
           <TableHead>التصنيف</TableHead>
           <TableHead>المبلغ</TableHead>
           <TableHead>التاريخ</TableHead>
-          <TableHead />
+          <TableHead className="no-print" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -62,7 +62,7 @@ export function ExpenseList({ expenses, currency }: { expenses: ExpenseRow[]; cu
               -{formatCurrency(expense.amount, currency)}
             </TableCell>
             <TableCell>{formatDate(expense.expense_date)}</TableCell>
-            <TableCell>
+            <TableCell className="no-print">
               <Button
                 variant="ghost"
                 size="icon"

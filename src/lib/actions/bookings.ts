@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/lib/auth";
-import { bookingFormSchema } from "@/lib/validations";
+import { bookingFormSchema, phoneSchema } from "@/lib/validations";
 import { queueWhatsAppNotification } from "@/lib/notifications";
 import { WORKING_HOURS } from "@/lib/constants";
 import { formatDate, formatTime, toDateKey } from "@/lib/utils";
@@ -260,4 +260,79 @@ export async function convertBookingToOrder(
   revalidatePath("/dashboard");
 
   return { success: true, data: { orderId: order.id } };
+}
+
+/** Staff: count of pending bookings, used for the sidebar notification badge. */
+export async function getPendingBookingsCount(): Promise<ActionResult<number>> {
+  await requireStaff();
+  const supabase = await createClient();
+
+  const { count } = await supabase
+    .from("bookings")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+
+  return { success: true, data: count ?? 0 };
+}
+
+export interface TrackedBooking {
+  id: string;
+  serviceName: string;
+  vehicleType: VehicleType;
+  bookingDate: string;
+  bookingTime: string;
+  status: BookingStatus;
+}
+
+/** Public: looks up a customer's bookings by phone number. No login required. */
+export async function getBookingsByPhone(
+  phone: string,
+): Promise<ActionResult<TrackedBooking[]>> {
+  const parsed = phoneSchema.safeParse(phone);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "رقم هاتف غير صحيح" };
+  }
+
+  const admin = createAdminClient();
+
+  const { data: customer } = await admin
+    .from("customers")
+    .select("id")
+    .eq("phone", parsed.data)
+    .maybeSingle();
+
+  if (!customer) {
+    return { success: true, data: [] };
+  }
+
+  const { data: bookings } = await admin
+    .from("bookings")
+    .select("id, service_id, vehicle_type, booking_date, booking_time, status")
+    .eq("customer_id", customer.id)
+    .order("booking_date", { ascending: false })
+    .order("booking_time", { ascending: false })
+    .limit(20);
+
+  if (!bookings || bookings.length === 0) {
+    return { success: true, data: [] };
+  }
+
+  const serviceIds = [...new Set(bookings.map((b) => b.service_id))];
+  const { data: services } = await admin
+    .from("services")
+    .select("id, name")
+    .in("id", serviceIds);
+  const serviceMap = new Map((services ?? []).map((s) => [s.id, s.name]));
+
+  return {
+    success: true,
+    data: bookings.map((b) => ({
+      id: b.id,
+      serviceName: serviceMap.get(b.service_id) ?? "",
+      vehicleType: b.vehicle_type,
+      bookingDate: b.booking_date,
+      bookingTime: b.booking_time,
+      status: b.status,
+    })),
+  };
 }

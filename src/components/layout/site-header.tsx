@@ -41,10 +41,10 @@ export function SiteHeader({ businessName }: { businessName: string }) {
             معرض الصور
           </Link>
           <Link
-            href="/#testimonials"
+            href="/#track"
             className="text-sm font-medium text-ink-600 transition-colors hover:text-brand-700"
           >
-            آراء العملاء
+            تتبع حجزي
           </Link>
         </nav>
 

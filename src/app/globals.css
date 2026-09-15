@@ -115,6 +115,18 @@ body {
   animation-name: slide-up;
 }
 
+/* iOS Safari auto-zooms the page on focus when an input's font-size is
+   under 16px, forcing users to manually zoom back out. Force 16px on all
+   form controls on small screens regardless of each component's own text
+   size class. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 @media print {
   .no-print {
     display: none !important;

@@ -5,6 +5,8 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { FinanceRangeFilter } from "@/components/dashboard/finance/finance-range-filter";
 import { ExpenseDialog } from "@/components/dashboard/finance/expense-dialog";
 import { ExpenseList } from "@/components/dashboard/finance/expense-list";
+import { ExportExpensesButton } from "@/components/dashboard/finance/export-expenses-button";
+import { PrintButton } from "@/components/dashboard/print-button";
 import { requireOwner } from "@/lib/auth";
 import { getSettings } from "@/lib/data/settings";
 import { getFinanceSummary, type FinanceRange } from "@/lib/data/finance";
@@ -34,10 +36,18 @@ export default async function FinancePage({
       <PageHeader
         title="الماليات"
         description="الإيرادات والمصروفات وصافي الربح"
-        action={<ExpenseDialog />}
+        action={
+          <div className="flex flex-wrap items-center gap-2.5 no-print">
+            <ExportExpensesButton data={summary.expenses} />
+            <PrintButton />
+            <ExpenseDialog />
+          </div>
+        }
       />
 
-      <FinanceRangeFilter />
+      <div className="no-print">
+        <FinanceRangeFilter />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
